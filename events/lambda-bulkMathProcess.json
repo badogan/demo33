@@ -1,0 +1,7 @@
+{
+    "event": {
+        "body": {
+            "inputArray": "12,3.5"
+        }
+    }
+}
