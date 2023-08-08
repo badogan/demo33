@@ -2,6 +2,7 @@ import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Runtime } from "aws-cdk-lib/aws-lambda";
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { join } from "path";
 import { LambdaRestApi } from "aws-cdk-lib/aws-apigateway";
 
@@ -35,14 +36,33 @@ export class Demo33Stack extends Stack {
     });
 
     // // start - dad joke section
+
+//option-1
     const jokeLambda = new NodejsFunction(this, 'JokeHandler', {
       entry: join(__dirname, `/../lambda/joke.js`),
       ...nodejsFunctionProps,
     });
+//option-1
+//option-2
+// const myLayer = new lambda.LayerVersion(this, 'MyLayer', {
+//   code: lambda.Code.fromAsset(join(__dirname, '/../lambda')), // path to the directory with your layer code
+//   compatibleRuntimes: [lambda.Runtime.NODEJS_14_X], // set the runtime compatible with the layer
+//   description: 'A layer to hold the external package dependency',
+//   layerVersionName: 'my-layer',
+// });
+
+//08Aug23: Option-2 is in effect except the layer. layer should not be used as included here hence commented
+
+    const jokeLambda2 = new lambda.Function(this, 'JokeHandler2', {
+      code: lambda.Code.fromAsset(join(__dirname, '/../lambda')), // path to the directory with your function code
+      handler: 'joke.handler', // specify the file and the export to use as the handler
+      runtime: lambda.Runtime.NODEJS_14_X, // set the runtime
+      // layers: [myLayer], // add the layer to the function
+    });
 
     const apigwForJoke = new LambdaRestApi(this, 'jokeEndpoint', {
       restApiName: 'Joke',
-      handler: jokeLambda,
+      handler: jokeLambda2,
       proxy: false
     })
 
