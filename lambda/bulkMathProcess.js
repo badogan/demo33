@@ -10,7 +10,6 @@ exports.handler = async function (event) {
   bodyObj.summed = summed
   bodyObj.multiplied = multiplied
   bodyObj.basriTestKey = "BasriTestValue"
-  bodyObj.ardaTestKey = "ArdaTestValue"
 
   // `{summed:${summed},multiplied:${multiplied}}`
 
